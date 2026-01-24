@@ -37,15 +37,15 @@ public class UpdaterCommand implements CommandExecutor {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("reload")) {
+            plugin.getConfigManager().reload();
+            sender.sendMessage("§6§lNaturalUpdater §8» §aKonfigurasi berhasil di-reload!");
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("restart")) {
-            sender.sendMessage("§6§lNaturalUpdater §8» §fMengirim sinyal restart ke Pterodactyl...");
-            ptero.restartServer().thenAccept(success -> {
-                if (success) {
-                    sender.sendMessage("§aRestart signal accepted! Server is rebooting.");
-                } else {
-                    sender.sendMessage("§cFailed to send restart signal. Check logs.");
-                }
-            });
+            sender.sendMessage("§6§lNaturalUpdater §8» §fMemicu restart via NaturalCore...");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restartalert 30"); // Trigger 30s countdown from NaturalCore
             return true;
         }
 

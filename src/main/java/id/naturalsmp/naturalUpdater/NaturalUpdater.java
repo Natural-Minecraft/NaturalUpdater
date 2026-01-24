@@ -27,6 +27,7 @@ public final class NaturalUpdater extends JavaPlugin {
 
         // Register commands
         getCommand("updater").setExecutor(new UpdaterCommand(this));
+        getCommand("updater").setTabCompleter(new UpdaterTabCompleter());
     }
 
     @Override
