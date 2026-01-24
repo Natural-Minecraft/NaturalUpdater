@@ -33,28 +33,41 @@ public class UpdateScheduler {
             String jarName = entry.getValue();
             String currentHash = plugin.getVersionDatabase().getLastHash(repo);
 
+            plugin.getLogger().info("Checking " + repo + "... (Current Local HASH: " + (currentHash != null ? currentHash.substring(0, 7) : "None") + ")");
+
             fetcher.getLatestCommitHash(repo).thenAccept(newHash -> {
-                if (newHash != null && !newHash.equals(currentHash)) {
-                    plugin.getLogger().info("New build detected for " + repo + "! Hash: " + newHash);
+                if (newHash == null) {
+                    plugin.getLogger().warning("Failed to fetch latest hash for " + repo + ". Check GitHub Token/Repo spelling.");
+                    return;
+                }
+
+                if (!newHash.equals(currentHash)) {
+                    plugin.getLogger().info("New build detected for " + repo + "! Remote HASH: " + newHash.substring(0, 7));
 
                     fetcher.getLatestReleaseDownloadUrl(repo).thenAccept(url -> {
-                        if (url != null) {
-                            DownloadUtils.downloadFile(url, jarName, updateDir).thenAccept(file -> {
-                                if (file != null) {
-                                    plugin.getVersionDatabase().setLastHash(repo, newHash);
-                                    plugin.getLogger().info("Successfully staged update for " + repo);
-
-                                    // Trigger restart if globally enabled
-                                    if (plugin.getConfig().getBoolean("auto-restart", true)) {
-                                        plugin.getLogger().warning("RESTARTING SERVER in 10s for updates...");
-                                        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                                            plugin.getPteroClient().restartServer();
-                                        }, 200L);
-                                    }
-                                }
-                            });
+                        if (url == null) {
+                            plugin.getLogger().warning("No .jar asset found in the latest release of " + repo);
+                            return;
                         }
+
+                        plugin.getLogger().info("Downloading update for " + repo + " from: " + url);
+                        DownloadUtils.downloadFile(url, jarName, updateDir).thenAccept(file -> {
+                            if (file != null) {
+                                plugin.getVersionDatabase().setLastHash(repo, newHash);
+                                plugin.getLogger().info("Successfully staged update for " + repo + " in /update folder.");
+
+                                // Trigger restart if globally enabled
+                                if (plugin.getConfig().getBoolean("auto-restart", true)) {
+                                    plugin.getLogger().warning("STAGING COMPLETE. Triggering server restart countdown...");
+                                    Bukkit.getScheduler().runTask(plugin, () -> {
+                                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restartalert 30");
+                                    });
+                                }
+                            }
+                        });
                     });
+                } else {
+                    plugin.getLogger().info(repo + " is already up to date.");
                 }
             });
         }

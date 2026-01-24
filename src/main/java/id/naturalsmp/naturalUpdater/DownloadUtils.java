@@ -35,10 +35,14 @@ public class DownloadUtils {
                             while ((read = is.read(buffer)) != -1) {
                                 fos.write(buffer, 0, read);
                             }
+                            System.out.println("[NaturalUpdater] Download complete: " + targetFile.getAbsolutePath());
                             return targetFile;
                         } catch (Exception e) {
+                            System.err.println("[NaturalUpdater] Failed to write file: " + e.getMessage());
                             e.printStackTrace();
                         }
+                    } else {
+                        System.err.println("[NaturalUpdater] HTTP error downloading: " + response.statusCode());
                     }
                     return null;
                 });
