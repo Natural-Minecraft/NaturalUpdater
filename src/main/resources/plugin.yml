@@ -1,0 +1,14 @@
+name: NaturalUpdater
+version: '${project.version}'
+main: id.naturalsmp.naturalupdater.NaturalUpdater
+api-version: '1.21'
+author: Lino
+description: Automated CI/CD bridge for NaturalSMP.
+commands:
+  updater:
+    description: Main command for NaturalUpdater.
+    permission: natural.updater.admin
+permissions:
+  natural.updater.admin:
+    description: Allows administration of plugin updates.
+    default: op

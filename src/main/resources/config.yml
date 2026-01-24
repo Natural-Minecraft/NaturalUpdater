@@ -1,0 +1,27 @@
+# NaturalUpdater Configuration
+
+# Pterodactyl Panel Settings
+# Get Client API Key from Account Settings -> API Credentials
+pterodactyl:
+  panel-url: "https://panel.example.com"
+  api-key: "ptlc_YOUR_KEY_HERE"
+  server-uuid: "YOUR_SERVER_UUID"
+
+# GitHub Settings
+# Pulling builds from GitHub Actions artifacts or Releases
+github:
+  owner: "Natural-Minecraft"
+  token: "ghp_YOUR_TOKEN_HERE" # Required if repository is private
+  check-interval-minutes: 10
+
+# Plugins to track
+# Format: 
+#   RepoPath (Owner/Repo): Target Jar Name
+plugins:
+  "Natural-Minecraft/NaturalCore": "NaturalCore.jar"
+  "Natural-Minecraft/NaturalDungeon": "NaturalDungeon.jar"
+  "Natural-Minecraft/BattlePass": "BattlePass.jar"
+
+# Automation
+auto-restart: true
+maintenance-mode before-restart: true
