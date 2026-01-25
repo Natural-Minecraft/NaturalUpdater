@@ -163,6 +163,7 @@ public class GitHubFetcher {
                         return false;
                     }
                 });
+    }
 
     public CompletableFuture<Boolean> triggerWorkflow(String repoName, String workflowFileName, JSONObject inputs) {
         ConfigManager config = plugin.getConfigManager();
