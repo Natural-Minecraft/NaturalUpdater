@@ -1,4 +1,4 @@
-package id.naturalsmp.naturalupdater;
+package id.naturalsmp.naturalUpdater;
 
 import java.io.File;
 import java.io.FileOutputStream;

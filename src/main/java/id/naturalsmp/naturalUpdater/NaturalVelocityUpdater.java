@@ -1,4 +1,4 @@
-package id.naturalsmp.naturalupdater;
+package id.naturalsmp.naturalUpdater;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
@@ -6,7 +6,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
-import id.naturalsmp.naturalupdater.platform.VelocityPlatform;
+import id.naturalsmp.naturalUpdater.platform.VelocityPlatform;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -33,6 +33,14 @@ public class NaturalVelocityUpdater {
 
         this.core = new UpdaterPlugin(new VelocityPlatform(this, server, julLogger, dataDirectory));
         this.core.onEnable();
+
+        // Register Command
+        com.velocitypowered.api.command.CommandManager cmdManager = server.getCommandManager();
+        com.velocitypowered.api.command.CommandMeta meta = cmdManager.metaBuilder("vupdater")
+                .aliases("vup")
+                .build();
+
+        cmdManager.register(meta, new VelocityUpdaterCommand(core));
     }
 
     public UpdaterPlugin getCore() {

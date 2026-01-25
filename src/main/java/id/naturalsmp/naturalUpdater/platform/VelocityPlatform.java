@@ -1,4 +1,4 @@
-package id.naturalsmp.naturalupdater.platform;
+package id.naturalsmp.naturalUpdater.platform;
 
 import com.velocitypowered.api.proxy.ProxyServer;
 import java.io.File;
@@ -60,6 +60,15 @@ public class VelocityPlatform implements UpdaterPlatform {
     @Override
     public void dispatchCommand(String command) {
         server.getCommandManager().executeAsync(server.getConsoleCommandSource(), command);
+    }
+
+    @Override
+    public void sendMessage(Object sender, String message) {
+        if (sender instanceof com.velocitypowered.api.command.CommandSource s) {
+            s.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
+                    .deserialize(message.replace("§", "&"))); // Convert legacy to MiniMessage if needed or use
+                                                              // Component
+        }
     }
 
     @Override

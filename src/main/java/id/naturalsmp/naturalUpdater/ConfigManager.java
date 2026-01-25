@@ -1,6 +1,6 @@
-package id.naturalsmp.naturalupdater;
+package id.naturalsmp.naturalUpdater;
 
-import id.naturalsmp.naturalupdater.platform.UpdaterPlatform;
+import id.naturalsmp.naturalUpdater.platform.UpdaterPlatform;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;

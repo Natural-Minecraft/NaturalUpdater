@@ -1,4 +1,4 @@
-package id.naturalsmp.naturalupdater;
+package id.naturalsmp.naturalUpdater;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;

@@ -1,4 +1,4 @@
-package id.naturalsmp.naturalupdater;
+package id.naturalsmp.naturalUpdater;
 
 import id.naturalsmp.naturalupdater.platform.BukkitPlatform;
 import org.bukkit.plugin.java.JavaPlugin;

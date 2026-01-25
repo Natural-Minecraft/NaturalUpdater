@@ -1,6 +1,6 @@
-package id.naturalsmp.naturalupdater;
+package id.naturalsmp.naturalUpdater;
 
-import id.naturalsmp.naturalupdater.platform.UpdaterPlatform;
+import id.naturalsmp.naturalUpdater.platform.UpdaterPlatform;
 import java.util.Map;
 
 public class UpdateScheduler {

@@ -1,4 +1,4 @@
-package id.naturalsmp.naturalupdater.platform;
+package id.naturalsmp.naturalUpdater.platform;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,6 +41,13 @@ public class BukkitPlatform implements UpdaterPlatform {
     @Override
     public void dispatchCommand(String command) {
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+    }
+
+    @Override
+    public void sendMessage(Object sender, String message) {
+        if (sender instanceof org.bukkit.command.CommandSender s) {
+            s.sendMessage(message);
+        }
     }
 
     @Override

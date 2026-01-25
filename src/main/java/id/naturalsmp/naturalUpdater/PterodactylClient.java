@@ -1,4 +1,4 @@
-package id.naturalsmp.naturalupdater;
+package id.naturalsmp.naturalUpdater;
 
 import java.net.URI;
 import java.net.http.HttpClient;

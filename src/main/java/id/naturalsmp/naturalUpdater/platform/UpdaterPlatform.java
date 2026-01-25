@@ -1,4 +1,4 @@
-package id.naturalsmp.naturalupdater.platform;
+package id.naturalsmp.naturalUpdater.platform;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -15,6 +15,8 @@ public interface UpdaterPlatform {
     void scheduleSync(Runnable task);
 
     void dispatchCommand(String command);
+
+    void sendMessage(Object sender, String message);
 
     String getPlatformName();
 }

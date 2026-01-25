@@ -1,6 +1,6 @@
-package id.naturalsmp.naturalupdater;
+package id.naturalsmp.naturalUpdater;
 
-import id.naturalsmp.naturalupdater.platform.UpdaterPlatform;
+import id.naturalsmp.naturalUpdater.platform.UpdaterPlatform;
 
 import java.io.File;
 import java.io.InputStream;
@@ -68,6 +68,10 @@ public class UpdaterPlugin {
 
     public VersionDatabase getVersionDatabase() {
         return versionDatabase;
+    }
+
+    public UpdateScheduler getUpdateScheduler() {
+        return updateScheduler;
     }
 
     public PterodactylClient getPteroClient() {

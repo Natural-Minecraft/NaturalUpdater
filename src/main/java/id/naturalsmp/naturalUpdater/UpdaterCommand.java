@@ -1,5 +1,6 @@
-package id.naturalsmp.naturalupdater;
+package id.naturalsmp.naturalUpdater;
 
+import id.naturalsmp.naturalUpdater.platform.UpdaterPlatform;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +18,7 @@ public class UpdaterCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("natural.updater.admin")) {
-            sender.sendMessage("§cYou do not have permission to use this command.");
+            plugin.getPlatform().sendMessage(sender, "§cYou do not have permission to use this command.");
             return true;
         }
 
@@ -27,19 +28,20 @@ public class UpdaterCommand implements CommandExecutor {
         }
 
         if (args[0].equalsIgnoreCase("sync")) {
-            sender.sendMessage("§6§lNaturalUpdater §8» §fMemulai sinkronisasi plugin dari GitHub...");
+            plugin.getPlatform().sendMessage(sender,
+                    "§6§lNaturalUpdater §8» §fMemulai sinkronisasi plugin dari GitHub...");
             syncAll(sender);
             return true;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
             plugin.getConfigManager().reload();
-            sender.sendMessage("§6§lNaturalUpdater §8» §aKonfigurasi berhasil di-reload!");
+            plugin.getPlatform().sendMessage(sender, "§6§lNaturalUpdater §8» §aKonfigurasi berhasil di-reload!");
             return true;
         }
 
         if (args[0].equalsIgnoreCase("restart")) {
-            sender.sendMessage("§6§lNaturalUpdater §8» §fMemicu restart via NaturalCore...");
+            plugin.getPlatform().sendMessage(sender, "§6§lNaturalUpdater §8» §fMemicu restart via NaturalCore...");
             plugin.getPlatform().dispatchCommand("restartalert 30");
             return true;
         }
