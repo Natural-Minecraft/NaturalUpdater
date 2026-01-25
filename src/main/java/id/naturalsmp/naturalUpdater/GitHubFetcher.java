@@ -163,5 +163,27 @@ public class GitHubFetcher {
                         return false;
                     }
                 });
+
+    public CompletableFuture<Boolean> triggerWorkflow(String repoName, String workflowFileName, JSONObject inputs) {
+        ConfigManager config = plugin.getConfigManager();
+        String owner = config.getGithubOwner().trim();
+        String token = config.getGithubToken().trim();
+        String url = String.format("https://api.github.com/repos/%s/%s/actions/workflows/%s/dispatches",
+                owner, repoName.trim(), workflowFileName);
+
+        JSONObject body = new JSONObject();
+        body.put("ref", "master"); // Adjust branch if needed
+        body.put("inputs", inputs);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Accept", "application/vnd.github.v3+json")
+                .header("Authorization", "token " + token)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+                .build();
+
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> response.statusCode() == 204);
     }
 }

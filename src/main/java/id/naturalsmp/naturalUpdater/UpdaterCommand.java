@@ -82,22 +82,24 @@ public class UpdaterCommand implements CommandExecutor {
             }
 
             String uploadUrl = releaseJson.getString("upload_url").split("\\{")[0];
-            int releaseId = releaseJson.getInt("id");
 
             fetcher.uploadAsset(uploadUrl, "generated.zip", packFile).thenAccept(success -> {
                 if (success) {
                     plugin.getPlatform().sendMessage(sender,
-                            "§6§lGeyserPack §8» §fUpload selesai. Mempublish rilis...");
+                            "§6§lGeyserPack §8» §fUpload selesai. Mentrigger konversi...");
 
-                    fetcher.publishRelease("NaturalPacks", releaseId).thenAccept(published -> {
-                        if (published) {
+                    JSONObject inputs = new JSONObject();
+                    inputs.put("tag", tagName);
+
+                    fetcher.triggerWorkflow("NaturalPacks", "convert.yml", inputs).thenAccept(triggered -> {
+                        if (triggered) {
                             plugin.getPlatform().sendMessage(sender,
-                                    "§6§lGeyserPack §8» §aBerhasil! Pack dipulish ke GitHub.");
+                                    "§6§lGeyserPack §8» §aBerhasil! Konversi sedang berjalan di GitHub.");
                             plugin.getPlatform().sendMessage(sender,
-                                    "§7Triggering conversion workflow... Silakan tunggu beberapa menit.");
+                                    "§7Silakan tunggu beberapa menit hingga pack tersedia di Velocity.");
                         } else {
                             plugin.getPlatform().sendMessage(sender,
-                                    "§cError: Gagal mempublish rilis (draft tetap tersimpan).");
+                                    "§cError: Gagal mentrigger Action GitHub. Cek izin Token (harus ada 'workflow').");
                         }
                     });
                 } else {
