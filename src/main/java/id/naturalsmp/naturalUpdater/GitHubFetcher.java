@@ -83,7 +83,9 @@ public class GitHubFetcher {
 
     public CompletableFuture<String> createRelease(String repoName, String tagName, String name) {
         ConfigManager config = plugin.getConfigManager();
-        String url = String.format("https://api.github.com/repos/%s/%s/releases", config.getGithubOwner(), repoName);
+        String owner = config.getGithubOwner().trim();
+        String token = config.getGithubToken().trim();
+        String url = String.format("https://api.github.com/repos/%s/%s/releases", owner, repoName.trim());
 
         JSONObject body = new JSONObject();
         body.put("tag_name", tagName);
@@ -95,7 +97,7 @@ public class GitHubFetcher {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Accept", "application/vnd.github.v3+json")
-                .header("Authorization", "token " + config.getGithubToken())
+                .header("Authorization", "token " + token)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
                 .build();
