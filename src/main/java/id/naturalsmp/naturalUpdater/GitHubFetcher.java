@@ -81,7 +81,7 @@ public class GitHubFetcher {
                 });
     }
 
-    public CompletableFuture<String> createRelease(String repoName, String tagName, String name) {
+    public CompletableFuture<JSONObject> createRelease(String repoName, String tagName, String name) {
         ConfigManager config = plugin.getConfigManager();
         String owner = config.getGithubOwner().trim();
         String token = config.getGithubToken().trim();
@@ -91,7 +91,7 @@ public class GitHubFetcher {
         body.put("tag_name", tagName);
         body.put("name", name);
         body.put("body", "Automated pack upload via NaturalUpdater.");
-        body.put("draft", false);
+        body.put("draft", true); // Create as draft to allow asset uploads before publishing
         body.put("prerelease", false);
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -105,13 +105,34 @@ public class GitHubFetcher {
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> {
                     if (response.statusCode() == 201) {
-                        return new JSONObject(response.body()).getString("upload_url").split("\\{")[0];
+                        return new JSONObject(response.body());
                     } else {
                         plugin.getLogger().severe(
                                 "GitHub Release Error: Status " + response.statusCode() + " - " + response.body());
                         return null;
                     }
                 });
+    }
+
+    public CompletableFuture<Boolean> publishRelease(String repoName, int releaseId) {
+        ConfigManager config = plugin.getConfigManager();
+        String owner = config.getGithubOwner().trim();
+        String token = config.getGithubToken().trim();
+        String url = String.format("https://api.github.com/repos/%s/%s/releases/%d", owner, repoName.trim(), releaseId);
+
+        JSONObject body = new JSONObject();
+        body.put("draft", false); // Publish the release
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Accept", "application/vnd.github.v3+json")
+                .header("Authorization", "token " + token)
+                .header("Content-Type", "application/json")
+                .method("PATCH", HttpRequest.BodyPublishers.ofString(body.toString()))
+                .build();
+
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> response.statusCode() == 200);
     }
 
     public CompletableFuture<Boolean> uploadAsset(String uploadUrl, String fileName, java.io.File file) {

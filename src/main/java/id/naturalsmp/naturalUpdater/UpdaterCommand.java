@@ -4,6 +4,7 @@ import id.naturalsmp.naturalUpdater.platform.UpdaterPlatform;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.json.JSONObject;
 import java.io.File;
 import java.util.Map;
 
@@ -73,21 +74,35 @@ public class UpdaterCommand implements CommandExecutor {
         String tagName = "pack-" + timeTag;
 
         GitHubFetcher fetcher = plugin.getUpdateScheduler().getFetcher();
-        fetcher.createRelease("NaturalPacks", tagName, "Resource Pack Update " + timeTag).thenAccept(uploadUrl -> {
-            if (uploadUrl == null) {
+        fetcher.createRelease("NaturalPacks", tagName, "Resource Pack Update " + timeTag).thenAccept(releaseJson -> {
+            if (releaseJson == null) {
                 plugin.getPlatform().sendMessage(sender,
                         "§cError: Gagal membuat rilis di GitHub. Pastikan Repo 'NaturalPacks' ada.");
                 return;
             }
 
+            String uploadUrl = releaseJson.getString("upload_url").split("\\{")[0];
+            int releaseId = releaseJson.getInt("id");
+
             fetcher.uploadAsset(uploadUrl, "generated.zip", packFile).thenAccept(success -> {
                 if (success) {
                     plugin.getPlatform().sendMessage(sender,
-                            "§6§lGeyserPack §8» §aBerhasil! Pack di-upload ke GitHub.");
-                    plugin.getPlatform().sendMessage(sender,
-                            "§7Triggering conversion workflow... Silakan tunggu beberapa menit.");
+                            "§6§lGeyserPack §8» §fUpload selesai. Mempublish rilis...");
+
+                    fetcher.publishRelease("NaturalPacks", releaseId).thenAccept(published -> {
+                        if (published) {
+                            plugin.getPlatform().sendMessage(sender,
+                                    "§6§lGeyserPack §8» §aBerhasil! Pack dipulish ke GitHub.");
+                            plugin.getPlatform().sendMessage(sender,
+                                    "§7Triggering conversion workflow... Silakan tunggu beberapa menit.");
+                        } else {
+                            plugin.getPlatform().sendMessage(sender,
+                                    "§cError: Gagal mempublish rilis (draft tetap tersimpan).");
+                        }
+                    });
                 } else {
-                    plugin.getPlatform().sendMessage(sender, "§cError: Gagal mengupload file ke GitHub.");
+                    plugin.getPlatform().sendMessage(sender,
+                            "§cError: Gagal mengupload file ke GitHub (Draft rilis dibuat tanpa asset).");
                 }
             });
         });
