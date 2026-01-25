@@ -18,7 +18,7 @@ public class VelocityUpdaterCommand implements SimpleCommand {
         String[] args = invocation.arguments();
 
         if (!invocation.source().hasPermission("natural.updater.admin")) {
-            core.getPlatform().sendMessage(sender, "§cYou do not have permission to use this command.");
+            core.getPlatform().sendMessage(sender, "&cYou do not have permission to use this command.");
             return;
         }
 
@@ -29,31 +29,31 @@ public class VelocityUpdaterCommand implements SimpleCommand {
 
         if (args[0].equalsIgnoreCase("sync")) {
             core.getPlatform().sendMessage(sender,
-                    "§6§lNaturalUpdater §8» §fMemulai sinkronisasi plugin dari GitHub...");
+                    "&6&lNaturalUpdater &8» &fMemulai sinkronisasi plugin dari GitHub...");
             syncAll(sender);
             return;
         }
 
         if (args[0].equalsIgnoreCase("reload")) {
             core.getConfigManager().reload();
-            core.getPlatform().sendMessage(sender, "§6§lNaturalUpdater §8» §aKonfigurasi berhasil di-reload!");
+            core.getPlatform().sendMessage(sender, "&6&lNaturalUpdater &8» &aKonfigurasi berhasil di-reload!");
             return;
         }
 
         if (args[0].equalsIgnoreCase("restart")) {
-            core.getPlatform().sendMessage(sender, "§6§lNaturalUpdater §8» §fMemicu restart panel...");
+            core.getPlatform().sendMessage(sender, "&6&lNaturalUpdater &8» &fMemicu restart panel...");
             core.getPteroClient().restartServer();
             return;
         }
     }
 
     private void showStatus(Object sender) {
-        core.getPlatform().sendMessage(sender, "§6§lNaturalUpdater Status §8»");
-        core.getPlatform().sendMessage(sender, "§7Platform: §f" + core.getPlatform().getPlatformName());
-        core.getPlatform().sendMessage(sender, "§7Ptero URL: §f" + core.getConfigManager().getPanelUrl());
-        core.getPlatform().sendMessage(sender, "§7GitHub Owner: §f" + core.getConfigManager().getGithubOwner());
+        core.getPlatform().sendMessage(sender, "&6&lNaturalUpdater Status &8»");
+        core.getPlatform().sendMessage(sender, "&7Platform: &f" + core.getPlatform().getPlatformName());
+        core.getPlatform().sendMessage(sender, "&7Ptero URL: &f" + core.getConfigManager().getPanelUrl());
+        core.getPlatform().sendMessage(sender, "&7GitHub Owner: &f" + core.getConfigManager().getGithubOwner());
         core.getPlatform().sendMessage(sender,
-                "§7Tracked Plugins: §f" + String.join(", ", core.getConfigManager().getTrackedPlugins().keySet()));
+                "&7Tracked Plugins: &f" + String.join(", ", core.getConfigManager().getTrackedPlugins().keySet()));
     }
 
     private void syncAll(Object sender) {
@@ -69,17 +69,17 @@ public class VelocityUpdaterCommand implements SimpleCommand {
 
             core.getUpdateScheduler().getFetcher().getLatestReleaseDownloadUrl(repo).thenAccept(url -> {
                 if (url != null) {
-                    core.getPlatform().sendMessage(sender, "§7Downloading §e" + repo + "§7...");
+                    core.getPlatform().sendMessage(sender, "&7Downloading &e" + repo + "&7...");
                     DownloadUtils.downloadFile(url, jarName, updateDir).thenAccept(file -> {
                         if (file != null) {
                             core.getPlatform().sendMessage(sender,
-                                    "§aSuccessfully staged §f" + jarName + " §ain /update folder.");
+                                    "&aSuccessfully staged &f" + jarName + " &ain /update folder.");
                         } else {
-                            core.getPlatform().sendMessage(sender, "§cFailed to download §f" + jarName);
+                            core.getPlatform().sendMessage(sender, "&cFailed to download &f" + jarName);
                         }
                     });
                 } else {
-                    core.getPlatform().sendMessage(sender, "§cNo release found for repo: §f" + repo);
+                    core.getPlatform().sendMessage(sender, "&cNo release found for repo: &f" + repo);
                 }
             });
         }

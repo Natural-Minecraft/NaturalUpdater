@@ -65,9 +65,15 @@ public class VelocityPlatform implements UpdaterPlatform {
     @Override
     public void sendMessage(Object sender, String message) {
         if (sender instanceof com.velocitypowered.api.command.CommandSource s) {
-            s.sendMessage(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage()
-                    .deserialize(message.replace("§", "&"))); // Convert legacy to MiniMessage if needed or use
-                                                              // Component
+            // Priority: MiniMessage if contains <, else Legacy &
+            net.kyori.adventure.text.Component component;
+            if (message.contains("<")) {
+                component = net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(message);
+            } else {
+                component = net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand()
+                        .deserialize(message);
+            }
+            s.sendMessage(component);
         }
     }
 
