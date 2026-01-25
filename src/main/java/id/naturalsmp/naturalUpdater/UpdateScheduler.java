@@ -93,7 +93,7 @@ public class UpdateScheduler {
         // Download Mappings
         fetcher.getLatestReleaseDownloadUrl(repo, ".mappings").thenAccept(url -> {
             if (url != null) {
-                DownloadUtils.downloadFile(url, "NaturalBedrockPacks.mappings", mappingDir).thenAccept(file -> {
+                DownloadUtils.downloadFile(url, "generated.mappings", mappingDir).thenAccept(file -> {
                     if (file != null) {
                         plugin.getLogger().info("Geyser Mappings updated via Auto-Sync.");
                         plugin.getVersionDatabase().setLastHash(repo, newHash);
@@ -105,7 +105,7 @@ public class UpdateScheduler {
         // Download MCPack
         fetcher.getLatestReleaseDownloadUrl(repo, ".mcpack").thenAccept(url -> {
             if (url != null) {
-                DownloadUtils.downloadFile(url, "NaturalBedrockPacks.mcpack", packDir).thenAccept(file -> {
+                DownloadUtils.downloadFile(url, "generated.mcpack", packDir).thenAccept(file -> {
                     if (file != null)
                         plugin.getLogger().info("Geyser MCPack updated via Auto-Sync.");
                 });
