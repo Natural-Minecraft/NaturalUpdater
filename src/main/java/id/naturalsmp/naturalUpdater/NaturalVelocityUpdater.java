@@ -38,6 +38,7 @@ public class NaturalVelocityUpdater {
         com.velocitypowered.api.command.CommandManager cmdManager = server.getCommandManager();
         com.velocitypowered.api.command.CommandMeta meta = cmdManager.metaBuilder("vupdater")
                 .aliases("vup")
+                .plugin(this)
                 .build();
 
         cmdManager.register(meta, new VelocityUpdaterCommand(core));

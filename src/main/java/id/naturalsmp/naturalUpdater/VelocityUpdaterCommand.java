@@ -47,6 +47,18 @@ public class VelocityUpdaterCommand implements SimpleCommand {
         }
     }
 
+    @Override
+    public java.util.List<String> suggest(Invocation invocation) {
+        String[] args = invocation.arguments();
+        if (args.length == 1) {
+            String input = args[0].toLowerCase();
+            return java.util.stream.Stream.of("status", "sync", "reload", "restart")
+                    .filter(s -> s.startsWith(input))
+                    .collect(java.util.stream.Collectors.toList());
+        }
+        return java.util.List.of();
+    }
+
     private void showStatus(Object sender) {
         core.getPlatform().sendMessage(sender, "&6&lNaturalUpdater Status &8»");
         core.getPlatform().sendMessage(sender, "&7Platform: &f" + core.getPlatform().getPlatformName());
