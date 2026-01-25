@@ -124,7 +124,11 @@ public class VelocityUpdaterCommand implements SimpleCommand {
                 DownloadUtils.downloadFile(url, "generated.mappings", mappingDir).thenAccept(file -> {
                     if (file != null)
                         core.getPlatform().sendMessage(sender, "&aMappings updated in Geyser folder.");
+                    else
+                        core.getPlatform().sendMessage(sender, "&cFailed to download Mappings.");
                 });
+            } else {
+                core.getPlatform().sendMessage(sender, "&cNo .mappings asset found in NaturalPacks release.");
             }
         });
 
@@ -135,7 +139,11 @@ public class VelocityUpdaterCommand implements SimpleCommand {
                 DownloadUtils.downloadFile(url, "generated.mcpack", packDir).thenAccept(file -> {
                     if (file != null)
                         core.getPlatform().sendMessage(sender, "&aMCPack updated in Geyser folder.");
+                    else
+                        core.getPlatform().sendMessage(sender, "&cFailed to download MCPack.");
                 });
+            } else {
+                core.getPlatform().sendMessage(sender, "&cNo .mcpack asset found in NaturalPacks release.");
             }
         });
     }

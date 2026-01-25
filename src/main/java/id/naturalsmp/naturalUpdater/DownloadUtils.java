@@ -37,8 +37,12 @@ public class DownloadUtils {
                             }
                             return targetFile;
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            System.err.println(
+                                    "[NaturalUpdater] Failed to save file " + fileName + ": " + e.getMessage());
                         }
+                    } else {
+                        System.err.println("[NaturalUpdater] Download failed for " + fileName + ". Status: "
+                                + response.statusCode());
                     }
                     return null;
                 });

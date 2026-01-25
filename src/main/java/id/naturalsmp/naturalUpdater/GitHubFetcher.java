@@ -47,18 +47,19 @@ public class GitHubFetcher {
 
     public CompletableFuture<String> getLatestReleaseDownloadUrl(String repoName, String extension) {
         ConfigManager config = plugin.getConfigManager();
+        String owner = config.getGithubOwner().trim();
         String url;
         if (repoName.contains("/")) {
-            url = String.format("https://api.github.com/repos/%s/releases/latest", repoName);
+            url = String.format("https://api.github.com/repos/%s/releases/latest", repoName.trim());
         } else {
-            url = String.format("https://api.github.com/repos/%s/%s/releases/latest", config.getGithubOwner(),
-                    repoName);
+            url = String.format("https://api.github.com/repos/%s/%s/releases/latest", owner,
+                    repoName.trim());
         }
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Accept", "application/vnd.github.v3+json")
-                .header("Authorization", "token " + config.getGithubToken())
+                .header("Authorization", "token " + config.getGithubToken().trim())
                 .GET()
                 .build();
 
@@ -71,7 +72,7 @@ public class GitHubFetcher {
                             for (int i = 0; i < assets.length(); i++) {
                                 JSONObject asset = assets.getJSONObject(i);
                                 String name = asset.getString("name");
-                                if (name.endsWith(extension)) {
+                                if (name.toLowerCase().endsWith(extension.toLowerCase())) {
                                     return asset.getString("browser_download_url");
                                 }
                             }
