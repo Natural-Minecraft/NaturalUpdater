@@ -105,7 +105,7 @@ public class GitHubFetcher {
                     if (response.statusCode() == 201) {
                         return new JSONObject(response.body()).getString("upload_url").split("\\{")[0];
                     } else {
-                        plugin.getLogger().error(
+                        plugin.getLogger().severe(
                                 "GitHub Release Error: Status " + response.statusCode() + " - " + response.body());
                         return null;
                     }
@@ -126,7 +126,7 @@ public class GitHubFetcher {
                     .POST(HttpRequest.BodyPublishers.ofFile(file.toPath()))
                     .build();
         } catch (Exception e) {
-            plugin.getLogger().error("GitHub Upload Exception: " + e.getMessage());
+            plugin.getLogger().severe("GitHub Upload Exception: " + e.getMessage());
             return CompletableFuture.completedFuture(false);
         }
 
@@ -135,7 +135,7 @@ public class GitHubFetcher {
                     if (response.statusCode() == 201) {
                         return true;
                     } else {
-                        plugin.getLogger().error(
+                        plugin.getLogger().severe(
                                 "GitHub Upload Error: Status " + response.statusCode() + " - " + response.body());
                         return false;
                     }
