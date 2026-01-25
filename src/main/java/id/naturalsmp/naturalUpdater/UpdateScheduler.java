@@ -33,16 +33,20 @@ public class UpdateScheduler {
             String jarName = entry.getValue();
             String currentHash = plugin.getVersionDatabase().getLastHash(repo);
 
-            plugin.getLogger().info("Checking " + repo + "... (Current Local HASH: " + (currentHash != null ? currentHash.substring(0, 7) : "None") + ")");
+            String displayHash = (currentHash != null && currentHash.length() >= 7) ? currentHash.substring(0, 7)
+                    : (currentHash != null ? currentHash : "None");
+            plugin.getLogger().info("Checking " + repo + "... (Current Local HASH: " + displayHash + ")");
 
             fetcher.getLatestCommitHash(repo).thenAccept(newHash -> {
                 if (newHash == null) {
-                    plugin.getLogger().warning("Failed to fetch latest hash for " + repo + ". Check GitHub Token/Repo spelling.");
+                    plugin.getLogger()
+                            .warning("Failed to fetch latest hash for " + repo + ". Check GitHub Token/Repo spelling.");
                     return;
                 }
 
                 if (!newHash.equals(currentHash)) {
-                    plugin.getLogger().info("New build detected for " + repo + "! Remote HASH: " + newHash.substring(0, 7));
+                    String displayNewHash = (newHash.length() >= 7) ? newHash.substring(0, 7) : newHash;
+                    plugin.getLogger().info("New build detected for " + repo + "! Remote HASH: " + displayNewHash);
 
                     fetcher.getLatestReleaseDownloadUrl(repo).thenAccept(url -> {
                         if (url == null) {
@@ -54,11 +58,13 @@ public class UpdateScheduler {
                         DownloadUtils.downloadFile(url, jarName, updateDir).thenAccept(file -> {
                             if (file != null) {
                                 plugin.getVersionDatabase().setLastHash(repo, newHash);
-                                plugin.getLogger().info("Successfully staged update for " + repo + " in /update folder.");
+                                plugin.getLogger()
+                                        .info("Successfully staged update for " + repo + " in /update folder.");
 
                                 // Trigger restart if globally enabled
                                 if (plugin.getConfig().getBoolean("auto-restart", true)) {
-                                    plugin.getLogger().warning("STAGING COMPLETE. Triggering server restart countdown...");
+                                    plugin.getLogger()
+                                            .warning("STAGING COMPLETE. Triggering server restart countdown...");
                                     Bukkit.getScheduler().runTask(plugin, () -> {
                                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restartalert 30");
                                     });
