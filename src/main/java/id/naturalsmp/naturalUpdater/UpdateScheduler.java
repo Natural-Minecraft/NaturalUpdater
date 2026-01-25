@@ -1,5 +1,6 @@
 package id.naturalsmp.naturalUpdater;
 
+import java.io.File;
 import java.util.Map;
 
 public class UpdateScheduler {
