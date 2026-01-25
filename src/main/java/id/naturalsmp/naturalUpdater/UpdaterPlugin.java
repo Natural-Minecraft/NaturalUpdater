@@ -45,6 +45,9 @@ public class UpdaterPlugin {
             try (InputStream in = getClass().getResourceAsStream("/" + configName)) {
                 if (in != null) {
                     Files.copy(in, file.toPath());
+                    platform.getLogger().info("Generated default config: " + configName);
+                } else {
+                    platform.getLogger().warning("Could not find internal resource: " + configName);
                 }
             } catch (Exception e) {
                 platform.getLogger().severe("Could not save default config: " + e.getMessage());

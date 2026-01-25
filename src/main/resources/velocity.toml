@@ -1,0 +1,16 @@
+[pterodactyl]
+# Konfigurasi Pterodactyl untuk Proxy
+panel-url = "https://panel.example.com"
+api-key = "ptlc_your_client_api_key_here"
+server-uuid = "your-server-uuid-here"
+
+[github]
+# Konfigurasi Repository GitHub
+owner = "Natural-Minecraft"
+token = "ghp_your_github_token_here"
+check-interval-minutes = 10
+
+[plugins]
+# Daftar plugin yang dipantau (RepoName = "JarFileName.jar")
+NaturalVelocity = "NaturalVelocity.jar"
+NaturalUpdater = "NaturalUpdater.jar"
