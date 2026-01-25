@@ -49,33 +49,66 @@ public class UpdateScheduler {
 
                 if (!newHash.equals(currentHash)) {
                     String displayNewHash = (newHash.length() >= 7) ? newHash.substring(0, 7) : newHash;
-                    plugin.getLogger().info("New build detected for " + repo + "! Remote HASH: " + displayNewHash);
+                    plugin.getLogger().info("New update detected for " + repo + "! Remote HASH: " + displayNewHash);
 
-                    fetcher.getLatestReleaseDownloadUrl(repo, ".jar").thenAccept(url -> {
-                        if (url == null) {
-                            plugin.getLogger().warning("No .jar asset found in the latest release of " + repo);
-                            return;
-                        }
-
-                        plugin.getPlatform().getLogger().info("Downloading update for " + repo + " from: " + url);
-                        DownloadUtils.downloadFile(url, jarName, updateDir).thenAccept(file -> {
-                            if (file != null) {
-                                plugin.getVersionDatabase().setLastHash(repo, newHash);
-                                plugin.getPlatform().getLogger()
-                                        .info("Successfully staged update for " + repo + " in /update folder.");
-
-                                // Trigger restart if globally enabled: THIS NEEDS PLATFORM AGNOSTIC LOGIC
-                                // But for now we just use the platform's dispatch command
-                                if (true) { // TODO: Add check to config
-                                    // Use standard SYSOUT or just return and let caller log
-                                }
+                    if (repo.equalsIgnoreCase("NaturalPacks") || repo.endsWith("/NaturalPacks")) {
+                        handleGeyserAutoSync(repo, newHash);
+                    } else {
+                        fetcher.getLatestReleaseDownloadUrl(repo, ".jar").thenAccept(url -> {
+                            if (url == null) {
+                                plugin.getLogger().warning("No .jar asset found in the latest release of " + repo);
+                                return;
                             }
+
+                            plugin.getPlatform().getLogger().info("Downloading update for " + repo + " from: " + url);
+                            DownloadUtils.downloadFile(url, jarName, updateDir).thenAccept(file -> {
+                                if (file != null) {
+                                    plugin.getVersionDatabase().setLastHash(repo, newHash);
+                                    plugin.getPlatform().getLogger()
+                                            .info("Successfully staged update for " + repo + " in /update folder.");
+                                }
+                            });
                         });
-                    });
+                    }
                 } else {
                     plugin.getLogger().info(repo + " is already up to date.");
                 }
             });
         }
+    }
+
+    private void handleGeyserAutoSync(String repo, String newHash) {
+        plugin.getLogger().info("Menciptakan sinkronisasi Geyser Pack otomatis...");
+
+        File geyserBase = new File(plugin.getPlatform().getDataFolder().getParentFile(), "Geyser-Velocity");
+        File mappingDir = new File(geyserBase, "custom_mappings");
+        File packDir = new File(geyserBase, "packs");
+
+        if (!mappingDir.exists())
+            mappingDir.mkdirs();
+        if (!packDir.exists())
+            packDir.mkdirs();
+
+        // Download Mappings
+        fetcher.getLatestReleaseDownloadUrl(repo, ".mappings").thenAccept(url -> {
+            if (url != null) {
+                DownloadUtils.downloadFile(url, "generated.mappings", mappingDir).thenAccept(file -> {
+                    if (file != null) {
+                        plugin.getLogger().info("Geyser Mappings updated via Auto-Sync.");
+                        plugin.getVersionDatabase().setLastHash(repo, newHash);
+                    }
+                });
+            }
+        });
+
+        // Download MCPack
+        fetcher.getLatestReleaseDownloadUrl(repo, ".mcpack").thenAccept(url -> {
+            if (url != null) {
+                DownloadUtils.downloadFile(url, "generated.mcpack", packDir).thenAccept(file -> {
+                    if (file != null)
+                        plugin.getLogger().info("Geyser MCPack updated via Auto-Sync.");
+                });
+            }
+        });
     }
 }
