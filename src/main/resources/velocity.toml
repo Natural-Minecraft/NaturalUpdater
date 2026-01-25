@@ -14,3 +14,4 @@ check-interval-minutes = 10
 # Daftar plugin yang dipantau (RepoName = "JarFileName.jar")
 NaturalVelocity = "NaturalVelocity.jar"
 NaturalUpdater = "NaturalUpdater.jar"
+NaturalPacks = "generated.zip"

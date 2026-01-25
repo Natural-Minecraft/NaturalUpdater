@@ -104,8 +104,11 @@ public class GitHubFetcher {
                 .thenApply(response -> {
                     if (response.statusCode() == 201) {
                         return new JSONObject(response.body()).getString("upload_url").split("\\{")[0];
+                    } else {
+                        plugin.getLogger().error(
+                                "GitHub Release Error: Status " + response.statusCode() + " - " + response.body());
+                        return null;
                     }
-                    return null;
                 });
     }
 
@@ -123,10 +126,19 @@ public class GitHubFetcher {
                     .POST(HttpRequest.BodyPublishers.ofFile(file.toPath()))
                     .build();
         } catch (Exception e) {
+            plugin.getLogger().error("GitHub Upload Exception: " + e.getMessage());
             return CompletableFuture.completedFuture(false);
         }
 
         return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(response -> response.statusCode() == 201);
+                .thenApply(response -> {
+                    if (response.statusCode() == 201) {
+                        return true;
+                    } else {
+                        plugin.getLogger().error(
+                                "GitHub Upload Error: Status " + response.statusCode() + " - " + response.body());
+                        return false;
+                    }
+                });
     }
 }
