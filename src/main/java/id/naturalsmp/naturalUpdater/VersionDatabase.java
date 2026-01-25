@@ -3,18 +3,16 @@ package id.naturalsmp.naturalupdater;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class VersionDatabase {
 
-    private final NaturalUpdater plugin;
+    private final UpdaterPlugin plugin;
     private final File file;
     private YamlConfiguration config;
 
-    public VersionDatabase(NaturalUpdater plugin) {
+    public VersionDatabase(UpdaterPlugin plugin) {
         this.plugin = plugin;
-        this.file = new File(plugin.getDataFolder(), "versions.yml");
+        this.file = new File(plugin.getPlatform().getDataFolder(), "versions.yml");
         load();
     }
 

@@ -35,17 +35,10 @@ public class DownloadUtils {
                             while ((read = is.read(buffer)) != -1) {
                                 fos.write(buffer, 0, read);
                             }
-                            org.bukkit.Bukkit.getLogger()
-                                    .info("[NaturalUpdater] Download complete: " + targetFile.getAbsolutePath());
                             return targetFile;
                         } catch (Exception e) {
-                            org.bukkit.Bukkit.getLogger()
-                                    .severe("[NaturalUpdater] Failed to write file: " + e.getMessage());
                             e.printStackTrace();
                         }
-                    } else {
-                        org.bukkit.Bukkit.getLogger()
-                                .warning("[NaturalUpdater] HTTP error downloading: " + response.statusCode());
                     }
                     return null;
                 });

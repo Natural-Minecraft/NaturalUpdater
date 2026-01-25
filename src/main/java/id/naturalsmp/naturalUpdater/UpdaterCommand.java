@@ -1,23 +1,17 @@
 package id.naturalsmp.naturalupdater;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import java.io.File;
 import java.util.Map;
 
 public class UpdaterCommand implements CommandExecutor {
 
-    private final NaturalUpdater plugin;
-    private final GitHubFetcher fetcher;
-    private final PterodactylClient ptero;
+    private final UpdaterPlugin plugin;
 
-    public UpdaterCommand(NaturalUpdater plugin) {
+    public UpdaterCommand(UpdaterPlugin plugin) {
         this.plugin = plugin;
-        this.fetcher = new GitHubFetcher(plugin);
-        this.ptero = new PterodactylClient(plugin);
     }
 
     @Override
@@ -46,7 +40,7 @@ public class UpdaterCommand implements CommandExecutor {
 
         if (args[0].equalsIgnoreCase("restart")) {
             sender.sendMessage("§6§lNaturalUpdater §8» §fMemicu restart via NaturalCore...");
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restartalert 30"); // Trigger 30s countdown from NaturalCore
+            plugin.getPlatform().dispatchCommand("restartalert 30");
             return true;
         }
 
@@ -55,6 +49,7 @@ public class UpdaterCommand implements CommandExecutor {
 
     private void showStatus(CommandSender sender) {
         sender.sendMessage("§6§lNaturalUpdater Status §8»");
+        sender.sendMessage("§7Platform: §f" + plugin.getPlatform().getPlatformName());
         sender.sendMessage("§7Ptero URL: §f" + plugin.getConfigManager().getPanelUrl());
         sender.sendMessage("§7GitHub Owner: §f" + plugin.getConfigManager().getGithubOwner());
         sender.sendMessage(
@@ -63,13 +58,13 @@ public class UpdaterCommand implements CommandExecutor {
 
     private void syncAll(CommandSender sender) {
         Map<String, String> plugins = plugin.getConfigManager().getTrackedPlugins();
-        File updateDir = new File(plugin.getDataFolder().getParentFile(), "update");
+        File updateDir = plugin.getPlatform().getUpdateFolder();
 
         for (Map.Entry<String, String> entry : plugins.entrySet()) {
             String repo = entry.getKey();
             String jarName = entry.getValue();
 
-            fetcher.getLatestReleaseDownloadUrl(repo).thenAccept(url -> {
+            plugin.getUpdateScheduler().getFetcher().getLatestReleaseDownloadUrl(repo).thenAccept(url -> {
                 if (url != null) {
                     sender.sendMessage("§7Downloading §e" + repo + "§7...");
                     DownloadUtils.downloadFile(url, jarName, updateDir).thenAccept(file -> {

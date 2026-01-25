@@ -8,10 +8,10 @@ import java.util.concurrent.CompletableFuture;
 
 public class PterodactylClient {
 
-    private final NaturalUpdater plugin;
+    private final UpdaterPlugin plugin;
     private final HttpClient client;
 
-    public PterodactylClient(NaturalUpdater plugin) {
+    public PterodactylClient(UpdaterPlugin plugin) {
         this.plugin = plugin;
         this.client = HttpClient.newHttpClient();
     }

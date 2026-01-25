@@ -1,19 +1,18 @@
 package id.naturalsmp.naturalupdater;
 
+import org.json.JSONObject;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
-import org.bukkit.Bukkit;
-import org.json.JSONObject;
 
 public class GitHubFetcher {
 
-    private final NaturalUpdater plugin;
+    private final UpdaterPlugin plugin;
     private final HttpClient client;
 
-    public GitHubFetcher(NaturalUpdater plugin) {
+    public GitHubFetcher(UpdaterPlugin plugin) {
         this.plugin = plugin;
         this.client = HttpClient.newHttpClient();
     }
@@ -52,7 +51,8 @@ public class GitHubFetcher {
         if (repoName.contains("/")) {
             url = String.format("https://api.github.com/repos/%s/releases/latest", repoName);
         } else {
-            url = String.format("https://api.github.com/repos/%s/%s/releases/latest", config.getGithubOwner(), repoName);
+            url = String.format("https://api.github.com/repos/%s/%s/releases/latest", config.getGithubOwner(),
+                    repoName);
         }
 
         HttpRequest request = HttpRequest.newBuilder()
