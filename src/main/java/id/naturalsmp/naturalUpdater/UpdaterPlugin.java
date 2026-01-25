@@ -58,6 +58,10 @@ public class UpdaterPlugin {
         }
     }
 
+    public java.util.logging.Logger getLogger() {
+        return platform.getLogger();
+    }
+
     public UpdaterPlatform getPlatform() {
         return platform;
     }

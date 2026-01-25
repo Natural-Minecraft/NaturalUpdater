@@ -13,6 +13,13 @@ import java.util.regex.Pattern;
 public class ConfigManager {
 
     private final UpdaterPlugin plugin;
+    private String panelUrl;
+    private String apiKey;
+    private String serverUuid;
+    private String githubOwner;
+    private String githubToken;
+    private int checkInterval;
+    private final Map<String, String> trackedPlugins = new HashMap<>();
 
     public ConfigManager(UpdaterPlugin plugin) {
         this.plugin = plugin;
