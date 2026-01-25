@@ -1,6 +1,6 @@
 name: NaturalUpdater
 version: '${project.version}'
-main: id.naturalsmp.naturalupdater.NaturalUpdater
+main: id.naturalsmp.naturalUpdater.NaturalUpdater
 api-version: '1.21'
 author: [ Natural Dev Creative ]
 description: Automated CI/CD bridge for NaturalSMP.

@@ -19,4 +19,15 @@ public interface UpdaterPlatform {
     void sendMessage(Object sender, String message);
 
     String getPlatformName();
+
+    // Agnostic Config/Storage Access
+    String getConfigString(String path);
+
+    int getConfigInt(String path, int defaultValue);
+
+    java.util.Map<String, String> getTrackedPlugins();
+
+    String getStoredVersion(String repo);
+
+    void setStoredVersion(String repo, String hash);
 }
