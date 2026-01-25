@@ -1,6 +1,5 @@
 package id.naturalsmp.naturalUpdater;
 
-import id.naturalsmp.naturalUpdater.platform.UpdaterPlatform;
 import java.util.Map;
 
 public class ConfigManager {

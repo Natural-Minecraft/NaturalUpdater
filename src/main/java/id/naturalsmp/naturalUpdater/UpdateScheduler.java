@@ -1,6 +1,5 @@
 package id.naturalsmp.naturalUpdater;
 
-import id.naturalsmp.naturalUpdater.platform.UpdaterPlatform;
 import java.util.Map;
 
 public class UpdateScheduler {
@@ -52,7 +51,7 @@ public class UpdateScheduler {
                     String displayNewHash = (newHash.length() >= 7) ? newHash.substring(0, 7) : newHash;
                     plugin.getLogger().info("New build detected for " + repo + "! Remote HASH: " + displayNewHash);
 
-                    fetcher.getLatestReleaseDownloadUrl(repo).thenAccept(url -> {
+                    fetcher.getLatestReleaseDownloadUrl(repo, ".jar").thenAccept(url -> {
                         if (url == null) {
                             plugin.getLogger().warning("No .jar asset found in the latest release of " + repo);
                             return;

@@ -79,7 +79,13 @@ public class VelocityUpdaterCommand implements SimpleCommand {
             String repo = entry.getKey();
             String jarName = entry.getValue();
 
-            core.getUpdateScheduler().getFetcher().getLatestReleaseDownloadUrl(repo).thenAccept(url -> {
+            // SPECIAL CASE: Geyser Pack Sync
+            if (repo.equalsIgnoreCase("NaturalPacks") || repo.endsWith("/NaturalPacks")) {
+                syncGeyserPack(sender, repo);
+                continue;
+            }
+
+            core.getUpdateScheduler().getFetcher().getLatestReleaseDownloadUrl(repo, ".jar").thenAccept(url -> {
                 if (url != null) {
                     core.getPlatform().sendMessage(sender, "&7Downloading &e" + repo + "&7...");
                     DownloadUtils.downloadFile(url, jarName, updateDir).thenAccept(file -> {
@@ -95,5 +101,42 @@ public class VelocityUpdaterCommand implements SimpleCommand {
                 }
             });
         }
+    }
+
+    private void syncGeyserPack(Object sender, String repo) {
+        core.getPlatform().sendMessage(sender, "&6&lGeyserPack &8» &fMemeriksa rilis pack terbaru...");
+
+        File geyserBase = new File(core.getPlatform().getDataFolder().getParentFile(), "Geyser-Velocity");
+        File mappingDir = new File(geyserBase, "custom_mappings");
+        File packDir = new File(geyserBase, "packs");
+
+        if (!mappingDir.exists())
+            mappingDir.mkdirs();
+        if (!packDir.exists())
+            packDir.mkdirs();
+
+        GitHubFetcher fetcher = core.getUpdateScheduler().getFetcher();
+
+        // 1. Fetch Mappings
+        fetcher.getLatestReleaseDownloadUrl(repo, ".mappings").thenAccept(url -> {
+            if (url != null) {
+                core.getPlatform().sendMessage(sender, "&7Downloading Geyser Mappings...");
+                DownloadUtils.downloadFile(url, "generated.mappings", mappingDir).thenAccept(file -> {
+                    if (file != null)
+                        core.getPlatform().sendMessage(sender, "&aMappings updated in Geyser folder.");
+                });
+            }
+        });
+
+        // 2. Fetch MCPack
+        fetcher.getLatestReleaseDownloadUrl(repo, ".mcpack").thenAccept(url -> {
+            if (url != null) {
+                core.getPlatform().sendMessage(sender, "&7Downloading Bedrock Pack (.mcpack)...");
+                DownloadUtils.downloadFile(url, "generated.mcpack", packDir).thenAccept(file -> {
+                    if (file != null)
+                        core.getPlatform().sendMessage(sender, "&aMCPack updated in Geyser folder.");
+                });
+            }
+        });
     }
 }

@@ -46,7 +46,51 @@ public class UpdaterCommand implements CommandExecutor {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("geyser")) {
+            handleGeyserExport(sender);
+            return true;
+        }
+
         return false;
+    }
+
+    private void handleGeyserExport(CommandSender sender) {
+        plugin.getPlatform().sendMessage(sender, "§6§lGeyserPack §8» §fMencari ItemsAdder resource pack...");
+
+        // ItemsAdder Output Path
+        File iaFolder = new File(plugin.getPlatform().getDataFolder().getParentFile(), "ItemsAdder");
+        File packFile = new File(iaFolder, "output/generated.zip");
+
+        if (!packFile.exists()) {
+            plugin.getPlatform().sendMessage(sender,
+                    "§cError: ItemsAdder generated.zip tidak ditemukan di " + packFile.getAbsolutePath());
+            return;
+        }
+
+        plugin.getPlatform().sendMessage(sender, "§6§lGeyserPack §8» §fMengupload ke GitHub NaturalPacks...");
+
+        String timeTag = new java.text.SimpleDateFormat("yyyyMMdd-HHmm").format(new java.util.Date());
+        String tagName = "pack-" + timeTag;
+
+        GitHubFetcher fetcher = plugin.getUpdateScheduler().getFetcher();
+        fetcher.createRelease("NaturalPacks", tagName, "Resource Pack Update " + timeTag).thenAccept(uploadUrl -> {
+            if (uploadUrl == null) {
+                plugin.getPlatform().sendMessage(sender,
+                        "§cError: Gagal membuat rilis di GitHub. Pastikan Repo 'NaturalPacks' ada.");
+                return;
+            }
+
+            fetcher.uploadAsset(uploadUrl, "generated.zip", packFile).thenAccept(success -> {
+                if (success) {
+                    plugin.getPlatform().sendMessage(sender,
+                            "§6§lGeyserPack §8» §aBerhasil! Pack di-upload ke GitHub.");
+                    plugin.getPlatform().sendMessage(sender,
+                            "§7Triggering conversion workflow... Silakan tunggu beberapa menit.");
+                } else {
+                    plugin.getPlatform().sendMessage(sender, "§cError: Gagal mengupload file ke GitHub.");
+                }
+            });
+        });
     }
 
     private void showStatus(CommandSender sender) {
@@ -66,7 +110,7 @@ public class UpdaterCommand implements CommandExecutor {
             String repo = entry.getKey();
             String jarName = entry.getValue();
 
-            plugin.getUpdateScheduler().getFetcher().getLatestReleaseDownloadUrl(repo).thenAccept(url -> {
+            plugin.getUpdateScheduler().getFetcher().getLatestReleaseDownloadUrl(repo, ".jar").thenAccept(url -> {
                 if (url != null) {
                     sender.sendMessage("§7Downloading §e" + repo + "§7...");
                     DownloadUtils.downloadFile(url, jarName, updateDir).thenAccept(file -> {

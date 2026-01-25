@@ -45,7 +45,7 @@ public class GitHubFetcher {
                 });
     }
 
-    public CompletableFuture<String> getLatestReleaseDownloadUrl(String repoName) {
+    public CompletableFuture<String> getLatestReleaseDownloadUrl(String repoName, String extension) {
         ConfigManager config = plugin.getConfigManager();
         String url;
         if (repoName.contains("/")) {
@@ -71,7 +71,7 @@ public class GitHubFetcher {
                             for (int i = 0; i < assets.length(); i++) {
                                 JSONObject asset = assets.getJSONObject(i);
                                 String name = asset.getString("name");
-                                if (name.endsWith(".jar")) {
+                                if (name.endsWith(extension)) {
                                     return asset.getString("browser_download_url");
                                 }
                             }
@@ -79,5 +79,54 @@ public class GitHubFetcher {
                     }
                     return null;
                 });
+    }
+
+    public CompletableFuture<String> createRelease(String repoName, String tagName, String name) {
+        ConfigManager config = plugin.getConfigManager();
+        String url = String.format("https://api.github.com/repos/%s/%s/releases", config.getGithubOwner(), repoName);
+
+        JSONObject body = new JSONObject();
+        body.put("tag_name", tagName);
+        body.put("name", name);
+        body.put("body", "Automated pack upload via NaturalUpdater.");
+        body.put("draft", false);
+        body.put("prerelease", false);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Accept", "application/vnd.github.v3+json")
+                .header("Authorization", "token " + config.getGithubToken())
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body.toString()))
+                .build();
+
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> {
+                    if (response.statusCode() == 201) {
+                        return new JSONObject(response.body()).getString("upload_url").split("\\{")[0];
+                    }
+                    return null;
+                });
+    }
+
+    public CompletableFuture<Boolean> uploadAsset(String uploadUrl, String fileName, java.io.File file) {
+        ConfigManager config = plugin.getConfigManager();
+        String url = String.format("%s?name=%s", uploadUrl, fileName);
+
+        HttpRequest request;
+        try {
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header("Accept", "application/vnd.github.v3+json")
+                    .header("Authorization", "token " + config.getGithubToken())
+                    .header("Content-Type", "application/octet-stream")
+                    .POST(HttpRequest.BodyPublishers.ofFile(file.toPath()))
+                    .build();
+        } catch (Exception e) {
+            return CompletableFuture.completedFuture(false);
+        }
+
+        return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(response -> response.statusCode() == 201);
     }
 }
