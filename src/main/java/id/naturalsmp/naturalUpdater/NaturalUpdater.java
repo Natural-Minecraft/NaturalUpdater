@@ -1,6 +1,6 @@
 package id.naturalsmp.naturalUpdater;
 
-import id.naturalsmp.naturalupdater.platform.BukkitPlatform;
+import id.naturalsmp.naturalUpdater.platform.BukkitPlatform;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NaturalUpdater extends JavaPlugin {
