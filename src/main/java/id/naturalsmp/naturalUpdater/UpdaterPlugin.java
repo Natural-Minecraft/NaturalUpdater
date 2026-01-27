@@ -21,6 +21,9 @@ public class UpdaterPlugin {
         // Platform specific default config saving
         saveDefaultConfig();
 
+        // Apply any pending updates from /update folder
+        applyPendingUpdates();
+
         this.configManager = new ConfigManager(this);
         this.versionDatabase = new VersionDatabase(this);
         this.pteroClient = new PterodactylClient(this);
@@ -30,6 +33,35 @@ public class UpdaterPlugin {
 
         platform.getLogger()
                 .info("NaturalUpdater (" + platform.getPlatformName() + ") enabled! Automated CI/CD is active.");
+    }
+
+    private void applyPendingUpdates() {
+        File updateDir = platform.getUpdateFolder();
+        if (!updateDir.exists() || !updateDir.isDirectory())
+            return;
+
+        File pluginsDir = updateDir.getParentFile();
+        File[] pendingFiles = updateDir.listFiles((dir, name) -> name.endsWith(".jar"));
+
+        if (pendingFiles == null || pendingFiles.length == 0)
+            return;
+
+        platform.getLogger().info("Found " + pendingFiles.length + " pending update(s) in /update folder...");
+
+        for (File file : pendingFiles) {
+            File target = new File(pluginsDir, file.getName());
+            try {
+                // Delete old version if exists
+                if (target.exists()) {
+                    target.delete();
+                }
+                // Move new version
+                Files.move(file.toPath(), target.toPath());
+                platform.getLogger().info("✔ Applied update: " + file.getName());
+            } catch (Exception e) {
+                platform.getLogger().warning("Failed to apply update " + file.getName() + ": " + e.getMessage());
+            }
+        }
     }
 
     private void saveDefaultConfig() {
