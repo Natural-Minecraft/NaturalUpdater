@@ -23,7 +23,7 @@ public class UpdateScheduler {
             return;
 
         plugin.getPlatform().scheduleAsync(() -> {
-            plugin.getPlatform().getLogger().info("Checking for plugin updates on GitHub...");
+            // Silent check - only log downloads and successes
             performAutoCheck();
         }, 600L, interval);
     }
@@ -37,9 +37,7 @@ public class UpdateScheduler {
             String jarName = entry.getValue();
             String currentHash = plugin.getVersionDatabase().getLastHash(repo);
 
-            String displayHash = (currentHash != null && currentHash.length() >= 7) ? currentHash.substring(0, 7)
-                    : (currentHash != null ? currentHash : "None");
-            plugin.getLogger().info("Checking " + repo + "... (Current Local HASH: " + displayHash + ")");
+            // Silent: Checking log removed
 
             fetcher.getLatestCommitHash(repo).thenAccept(newHash -> {
                 if (newHash == null) {
@@ -49,8 +47,7 @@ public class UpdateScheduler {
                 }
 
                 if (!newHash.equals(currentHash)) {
-                    String displayNewHash = (newHash.length() >= 7) ? newHash.substring(0, 7) : newHash;
-                    plugin.getLogger().info("New update detected for " + repo + "! Remote HASH: " + displayNewHash);
+                    // Silent: Update detected log removed
 
                     if (repo.equalsIgnoreCase("NaturalPacks") || repo.endsWith("/NaturalPacks")) {
                         handleGeyserAutoSync(repo, newHash);
@@ -72,7 +69,7 @@ public class UpdateScheduler {
                         });
                     }
                 } else {
-                    plugin.getLogger().info(repo + " is already up to date.");
+                    // Silent: Up to date log removed
                 }
             });
         }
