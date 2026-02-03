@@ -20,7 +20,10 @@ github:
 plugins:
   "Natural-Minecraft/NaturalCore": "NaturalCore.jar"
   "Natural-Minecraft/NaturalDungeon": "NaturalDungeon.jar"
-  "Natural-Minecraft/BattlePass": "BattlePass.jar"
+  "Natural-Minecraft/NaturalPass": "NaturalPass.jar"
+  "Natural-Minecraft/NaturalBank": "NaturalBank.jar"
+  "Natural-Minecraft/NaturalParkour": "BattleParkour.jar"
+  "Natural-Minecraft/NaturalUpdater": "NaturalUpdater-1.0-SNAPSHOT.jar"
 
 # Automation
 auto-restart: true
