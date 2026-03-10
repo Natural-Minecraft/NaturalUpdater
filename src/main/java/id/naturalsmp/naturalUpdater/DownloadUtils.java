@@ -47,4 +47,22 @@ public class DownloadUtils {
                     return null;
                 });
     }
+
+    public static CompletableFuture<String> getFileHash(String url) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .method("HEAD", HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        return client.sendAsync(request, HttpResponse.BodyHandlers.discarding())
+                .thenApply(response -> {
+                    if (response.statusCode() >= 200 && response.statusCode() < 400) {
+                        return response.headers().firstValue("ETag")
+                                .orElseGet(() -> response.headers().firstValue("Last-Modified")
+                                        .orElseGet(() -> response.headers().firstValue("Content-Length")
+                                                .orElse(null)));
+                    }
+                    return null;
+                });
+    }
 }

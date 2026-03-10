@@ -85,6 +85,19 @@ public class VelocityUpdaterCommand implements SimpleCommand {
                 continue;
             }
 
+            if (repo.startsWith("http://") || repo.startsWith("https://")) {
+                core.getPlatform().sendMessage(sender, "&7Downloading &e" + jarName + "&7 from URL...");
+                DownloadUtils.downloadFile(repo, jarName, updateDir).thenAccept(file -> {
+                    if (file != null) {
+                        core.getPlatform().sendMessage(sender,
+                                "&aSuccessfully staged &f" + jarName + " &ain /update folder.");
+                    } else {
+                        core.getPlatform().sendMessage(sender, "&cFailed to download &f" + jarName);
+                    }
+                });
+                continue;
+            }
+
             core.getUpdateScheduler().getFetcher().getLatestReleaseDownloadUrl(repo, ".jar").thenAccept(url -> {
                 if (url != null) {
                     core.getPlatform().sendMessage(sender, "&7Downloading &e" + repo + "&7...");

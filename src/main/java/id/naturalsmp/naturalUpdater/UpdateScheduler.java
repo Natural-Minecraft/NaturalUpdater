@@ -37,7 +37,27 @@ public class UpdateScheduler {
             String jarName = entry.getValue();
             String currentHash = plugin.getVersionDatabase().getLastHash(repo);
 
-            // Silent: Checking log removed
+            if (repo.startsWith("http://") || repo.startsWith("https://")) {
+                DownloadUtils.getFileHash(repo).thenAccept(newHash -> {
+                    if (newHash == null) {
+                        plugin.getPlatform().getLogger()
+                                .warning("Failed to fetch hash for direct URL: " + repo);
+                        return;
+                    }
+
+                    if (!newHash.equals(currentHash)) {
+                        plugin.getPlatform().getLogger().info("Downloading update for " + jarName + " from direct URL...");
+                        DownloadUtils.downloadFile(repo, jarName, updateDir).thenAccept(file -> {
+                            if (file != null) {
+                                plugin.getVersionDatabase().setLastHash(repo, newHash);
+                                plugin.getPlatform().getLogger()
+                                        .info("Successfully staged update for " + jarName + " in /update folder.");
+                            }
+                        });
+                    }
+                });
+                continue;
+            }
 
             fetcher.getLatestCommitHash(repo).thenAccept(newHash -> {
                 if (newHash == null) {

@@ -127,6 +127,18 @@ public class UpdaterCommand implements CommandExecutor {
             String repo = entry.getKey();
             String jarName = entry.getValue();
 
+            if (repo.startsWith("http://") || repo.startsWith("https://")) {
+                sender.sendMessage("§7Downloading §e" + jarName + "§7 from URL...");
+                DownloadUtils.downloadFile(repo, jarName, updateDir).thenAccept(file -> {
+                    if (file != null) {
+                        sender.sendMessage("§aSuccessfully staged §f" + jarName + " §ain /update folder.");
+                    } else {
+                        sender.sendMessage("§cFailed to download §f" + jarName);
+                    }
+                });
+                continue;
+            }
+
             plugin.getUpdateScheduler().getFetcher().getLatestReleaseDownloadUrl(repo, ".jar").thenAccept(url -> {
                 if (url != null) {
                     sender.sendMessage("§7Downloading §e" + repo + "§7...");
