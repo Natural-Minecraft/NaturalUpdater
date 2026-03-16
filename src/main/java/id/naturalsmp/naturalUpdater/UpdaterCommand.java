@@ -47,7 +47,7 @@ public class UpdaterCommand implements CommandExecutor {
             return true;
         }
 
-        if (args[0].equalsIgnoreCase("geyser")) {
+        if (args[0].equalsIgnoreCase("geyser") || args[0].equalsIgnoreCase("pack")) {
             handleGeyserExport(sender);
             return true;
         }

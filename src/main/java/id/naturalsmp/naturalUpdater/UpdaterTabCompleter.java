@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class UpdaterTabCompleter implements TabCompleter {
 
-    private final List<String> subCommands = Arrays.asList("status", "sync", "reload", "restart");
+    private final List<String> subCommands = Arrays.asList("status", "sync", "reload", "restart", "pack", "geyser");
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
