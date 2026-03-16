@@ -134,7 +134,7 @@ public class VelocityUpdaterCommand implements SimpleCommand {
         fetcher.getLatestReleaseDownloadUrl(repo, ".mappings").thenAccept(url -> {
             if (url != null) {
                 core.getPlatform().sendMessage(sender, "&7Downloading Geyser Mappings...");
-                DownloadUtils.downloadFile(url, "generated.mappings", mappingDir).thenAccept(file -> {
+                DownloadUtils.downloadFile(url, "geyser_mappings.json", mappingDir).thenAccept(file -> {
                     if (file != null)
                         core.getPlatform().sendMessage(sender, "&aMappings updated in Geyser folder.");
                     else
@@ -149,7 +149,7 @@ public class VelocityUpdaterCommand implements SimpleCommand {
         fetcher.getLatestReleaseDownloadUrl(repo, ".mcpack").thenAccept(url -> {
             if (url != null) {
                 core.getPlatform().sendMessage(sender, "&7Downloading Bedrock Pack (.mcpack)...");
-                DownloadUtils.downloadFile(url, "generated.mcpack", packDir).thenAccept(file -> {
+                DownloadUtils.downloadFile(url, "NaturalSMP-Bedrock.mcpack", packDir).thenAccept(file -> {
                     if (file != null)
                         core.getPlatform().sendMessage(sender, "&aMCPack updated in Geyser folder.");
                     else
