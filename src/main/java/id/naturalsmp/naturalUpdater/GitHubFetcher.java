@@ -69,6 +69,22 @@ public class GitHubFetcher {
                         JSONObject json = new JSONObject(response.body());
                         if (json.has("assets")) {
                             org.json.JSONArray assets = json.getJSONArray("assets");
+                            
+                            // Try strict platform-specific asset name matching for jar files to prevent velocity vs paper mixups
+                            if (extension.equalsIgnoreCase(".jar") && plugin.getPlatform() != null) {
+                                boolean isVelocity = plugin.getPlatform().getPlatformName().equalsIgnoreCase("Velocity");
+                                String platformKeyword = isVelocity ? "velocity" : "paper";
+                                
+                                for (int i = 0; i < assets.length(); i++) {
+                                    JSONObject asset = assets.getJSONObject(i);
+                                    String name = asset.getString("name");
+                                    if (name.toLowerCase().endsWith(".jar") && name.toLowerCase().contains(platformKeyword)) {
+                                        return asset.getString("browser_download_url");
+                                    }
+                                }
+                            }
+                            
+                            // Fallback: search strictly by file extension
                             for (int i = 0; i < assets.length(); i++) {
                                 JSONObject asset = assets.getJSONObject(i);
                                 String name = asset.getString("name");
