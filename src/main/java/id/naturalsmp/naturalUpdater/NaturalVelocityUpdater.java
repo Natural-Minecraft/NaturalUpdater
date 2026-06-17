@@ -28,6 +28,19 @@ public class NaturalVelocityUpdater {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+        server.getConsoleCommandSource().sendMessage(
+                net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer.legacyAmpersand().deserialize(
+                    "\n&a===============\n" +
+                    "&a _   _       _                  _     &e _   _           _       _            \n" +
+                    "&a| \ | | __ _| |_ _   _ _ __ __ _| |   &e| | | |_ __   __| | __ _| |_ ___ _ __ \n" +
+                    "&a|  \| |/ _` | __| | | | '__/ _` | |   &e| | | | '_ \ / _` |/ _` | __/ _ \\ '__|\n" +
+                    "&a| |\  | (_| | |_| |_| | | | (_| | |   &e| |_| | |_) | (_| | (_| | ||  __/ |   \n" +
+                    "&a|_| \_|\__,_|\__|\__,_|_|  \__,_|_|   &e \___/| .__/ \__,_|\__,_|\__\___|_|   \n" +
+                    "                                             |_|                             \n" +
+                    "       >> &eNaturalUpdater v1.0-SNAPSHOT Enabled! <<\n" +
+                    "&a===============\n"
+                )
+        );
         // Convert SLF4J logger to java.util.logging.Logger for the core
         java.util.logging.Logger julLogger = java.util.logging.Logger.getLogger("NaturalUpdater");
 

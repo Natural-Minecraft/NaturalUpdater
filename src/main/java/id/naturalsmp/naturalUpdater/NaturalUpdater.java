@@ -9,6 +9,19 @@ public final class NaturalUpdater extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        org.bukkit.Bukkit.getConsoleSender().sendMessage(
+                org.bukkit.ChatColor.translateAlternateColorCodes('&',
+                    "\n&a===============\n" +
+                    "&a _   _       _                  _     &e _   _           _       _            \n" +
+                    "&a| \ | | __ _| |_ _   _ _ __ __ _| |   &e| | | |_ __   __| | __ _| |_ ___ _ __ \n" +
+                    "&a|  \| |/ _` | __| | | | '__/ _` | |   &e| | | | '_ \ / _` |/ _` | __/ _ \\ '__|\n" +
+                    "&a| |\  | (_| | |_| |_| | | | (_| | |   &e| |_| | |_) | (_| | (_| | ||  __/ |   \n" +
+                    "&a|_| \_|\__,_|\__|\__,_|_|  \__,_|_|   &e \___/| .__/ \__,_|\__,_|\__\___|_|   \n" +
+                    "                                             |_|                             \n" +
+                    "       >> &eNaturalUpdater v" + getDescription().getVersion() + " Enabled! <<\n" +
+                    "&a===============\n"
+                )
+        );
         this.core = new UpdaterPlugin(new BukkitPlatform(this));
         this.core.onEnable();
 
