@@ -11,7 +11,7 @@ public final class NaturalUpdater extends JavaPlugin {
     public void onEnable() {
         org.bukkit.Bukkit.getConsoleSender().sendMessage(
                 org.bukkit.ChatColor.translateAlternateColorCodes('&',
-                    "\n&a===============\n" +
+                    "\n&a================================================================================\n" +
                     "&a _   _       _                  _     &e _   _           _       _\n" +
                     "&a| \\ | | __ _| |_ _   _ _ __ __ _| |   &e | | | |_ __   __| | __ _| |_ ___ _ __\n" +
                     "&a|  \\| |/ _` | __| | | | '__/ _` | |   &e | | | | '_ \\ / _` |/ _` | __/ _ \\ '__|\n" +
@@ -19,7 +19,7 @@ public final class NaturalUpdater extends JavaPlugin {
                     "&a|_| \\_|\\__,_|\\__|\\__,_|_|     \\___/| .&e__/ \\__,_|\\__,_|\\__\\___|_|\n" +
                     "&a                                      &e       |_|\n" +
                     "       >> &eNaturalUpdater v" + getDescription().getVersion() + " Enabled! <<\n" +
-                    "&a===============\n"
+                    "&a================================================================================\n"
                 )
         );
         this.core = new UpdaterPlugin(new BukkitPlatform(this));
